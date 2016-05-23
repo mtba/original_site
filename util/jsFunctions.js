@@ -1,4 +1,8 @@
 
+/**
+ * 同じ部屋の人すべてに作用する処理
+ */
+
 //誰かがデータストアを操作した際に、すべてのユーザーの下でその操作に応じた関数が動作する
 ds.on('send', signal); //信号を受け取ったとき
 ds.on('push', enter); //参加者が増えたとき
@@ -10,71 +14,35 @@ function signal(sent){
 
     //発言
     case 'chat':
-      $('#output').append(sent.value.name + '：' + sent.value.remark + '<br>');
+      if ( $('#output p').size() == <?php echo MAX_CHAT;?> ) {
+        $('#output p').eq(0).remove();
+      }
+      $('#output').append('<p>' + sent.value.name + '：' + sent.value.remark + '</p>');
       break;
 
     //ヒント提示
     case 'hint':
       answer_time = true;
       $('.hint').eq(hint_num).text(sent.value.remark);
+      $('#message h3').text('回答時間');
+      clearTimeout(timerID);
+      count(20);
       break;
 
     //正解
     case 'success':
       if (answer_time == true) {
+        clearTimeout(timerID);
         answer_time = false;
         $('#output').append(sent.value.name + '：' + sent.value.remark + '  <span class="red">←正解！</span><br>');
-        $('#word h1').text(word);
 
         var $point = $('#'+sent.value.id+' .point');
         $point.text( parseInt($point.text()) + 10 );
 
-        //3秒待って処理を実行
-        setTimeout(function(){
-          $('.hint').text('');
-          $('#remark').prop("disabled", false);
+        to_next();
 
-          if (q_num == all.length-1) {
-
-            if (owner == true) {
-              $.ajax({
-                type: "POST",
-                url: "ajax_DB.php",
-                datatype: "json",
-                data: {
-                  "mode": "game_switch",
-                  "id": room_id,
-                  "on_off": false
-                },
-                success: function(res){
-                  if (res.success == false) {
-                    $('#err').text('エラー発生。ゲームを終了できません')
-                  }else {
-                    ds.send({mode: 'finish'});
-                  }
-                }
-              });
-            }
-
-          }else {
-            if (th < $('#people ul li').size()-1) {
-              th++;
-            }else {
-              th = 0;
-            }
-            q_num++;
-
-            if (th >= 1) {
-              $('#people ul li').eq(th-1).css('color', 'black');
-            }else {
-              $('#people ul li').eq($('#people ul li').size() - 1).css('color', 'black');
-            }
-
-            question();
-
-          }
-        },3000);
       }
+      break;
 
     //オーナー権譲渡
     case 'transfer':
@@ -89,6 +57,11 @@ function signal(sent){
     case 'start':
       game_on = true;
       all = sent.value.all;
+
+      if ( $('#output p').size() == <?php echo MAX_CHAT;?> ) {
+        $('#output p').eq(0).remove();
+      }
+      $('#output').append('<p class="blue">ゲームスタート</p>');
 
       $("#join").prop("disabled", true);
       $('#people ul li').append('<span class=point>0</span>');
@@ -106,8 +79,10 @@ function signal(sent){
       all      = [];
       q_num    = 0;
       $('#people ul li').css('color', 'black');
-      $('#message h2').text('');
+      $('#message h3').text('');
+      $('#parent h2').text('');
       $('#word h1').text('');
+      $('#counter').text('');
       $('.point').remove();
       $("#start").prop("disabled", false);
       $("#join").prop("disabled", false);
@@ -134,6 +109,9 @@ function enter(pushed){
       // people.push(datas.id); //参加中のユーザーのIDを配列に格納しておく
     });
 
+    if ( $('#output p').size() == <?php echo MAX_CHAT;?> ) {
+      $('#output p').eq(0).remove();
+    }
     $('#output').append('<p class="blue">' + pushed.value.user + 'さんが入室しました</p>');
     cntrol_startBtn();
 
@@ -165,18 +143,108 @@ function cntrol_startBtn(){
 function question(){
 
   $('#people ul li').eq(th).css('color', '#e65a16');
+  $('#parent h2').text( '親：' + $('#people ul li').eq(th).children('.user_name').text() );
 
   if (user_id == $('#people ul li').eq(th).attr("id")) {
     parent = true;
     $('#word h1').text(all[q_num]);
-    $('#message h2').text('あなたが親です。ヒントを出してください');
+    $('#message h3').text('ヒントを出してください');
   }else {
     parent = false;
-    $('#message h2').text('');
+    $('#message h3').text('ヒント待ち');
     $('#word h1').text('');
     for (var i = 0; i < all[q_num].length; i++) {
       $('#word h1').append('○');
     }
   }
 
+  count(20);
+
+}
+
+//カウントダウン
+function count(seconds){
+  function show(){
+    $('#counter').text(seconds);
+    seconds = seconds - 1;
+    timerID = setTimeout(function(){
+      show();
+    },1000);
+
+    if (seconds==0) {
+
+      $('#counter').text(seconds);
+      clearTimeout(timerID);
+
+      if (answer_time == true) {
+        answer_time = false;
+        $('#remark').prop("disabled", false);
+        if (hint_num != <?php echo MAX_HINT;?> -1) {
+          hint_num++;
+          question();
+        }else {
+          $('#message h3').text('正解者無し');
+          to_next();
+        }
+      }else {
+        $('#message h3').text('時間切れ');
+        to_next();
+      }
+
+    }
+  }
+  show();
+}
+
+//次の問題へ。またはゲーム終了へ
+function to_next(){
+
+  $('#word h1').text(all[q_num]);
+
+  //5秒待って処理を実行
+  setTimeout(function(){
+    $('.hint').text('');
+    $('#remark').prop("disabled", false);
+
+    if (q_num == all.length-1) {
+
+      if (owner == true) {
+        $.ajax({
+          type: "POST",
+          url: "ajax_DB.php",
+          datatype: "json",
+          data: {
+            "mode": "game_switch",
+            "id": room_id,
+            "on_off": false
+          },
+          success: function(res){
+            if (res.success == false) {
+              $('#err').text('エラー発生。ゲームを終了できません')
+            }else {
+              ds.send({mode: 'finish'});
+            }
+          }
+        });
+      }
+
+    }else {
+      if (th < $('#people ul li').size()-1) {
+        th++;
+      }else {
+        th = 0;
+      }
+      q_num++;
+      hint_num = 0;
+
+      if (th >= 1) {
+        $('#people ul li').eq(th-1).css('color', 'black');
+      }else {
+        $('#people ul li').eq($('#people ul li').size() - 1).css('color', 'black');
+      }
+
+      question();
+
+    }
+  },5000);
 }

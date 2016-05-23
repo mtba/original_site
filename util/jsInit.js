@@ -1,19 +1,21 @@
+/**
+ * 部屋に入ったときに自動で動作する初期化処理
+ */
 
 var room_id     = '<?php echo $room_id;?>';
 var user_name   = '<?php echo $user_name;?>'; //ユーザーの名前
 var user_id     = '' //データストア上の自分のID
-// var people   = []; //それぞれのユーザーのIDを入れる配列
 var th          = 0; //親は何人目か
 var owner       = false; //オーナー権を持っているか否か
 var join        = false; //参加しているか否か
 var game_on     = <?php echo $result_search[0]['started'];?>; //ゲームスタートしているか否か
 var rounds      = <?php echo $result_search[0]['rounds'];?>; //ラウンド数
 var parent      = false; //親か否か
-// var word        = ''; //お題
 var hint_num    = 0; //何番目のヒントか
 var answer_time = false; //回答時間か否か
 var all         = [];
 var q_num       = 0;
+var timerID; //タイマー管理用
 
 //MilkCocoa接続
 //部屋のIDを基にデータストアを作成、または接続

@@ -1,4 +1,8 @@
 
+/**
+ * 自動では発動しないイベント系
+ */
+
 //参加ボタンが押されたときの処理(空なら何も起きない)
 $('#join').click(function(){
   if ($('#text').val() != '') {
@@ -88,10 +92,10 @@ $('#start').click(function(){
         $("#start").prop("disabled", true);
 
         //全問題をここで取得してしまう
-        var words = ['りんご','おれんじ','ますかっと'];
+        var words = ['なし','りんご','おれんじ','ますかっと','ぱいなっぷる'];
         var all_questions =[];
         for (var i = 0; i < $('#people ul li').size() * rounds; i++) {
-          var rand = Math.floor( Math.random() * 3 ) ;
+          var rand = Math.floor( Math.random() * 5 ) ;
           all_questions.push(words[rand]);
         }
 

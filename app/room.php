@@ -47,9 +47,15 @@ if( ! is_array($result_search) ){
         <h1></h1>
       </div>
 
-      <div id="message">
+      <div id="parent">
         <h2></h2>
       </div>
+
+      <div id="message">
+        <h3></h3>
+      </div>
+
+      <div id="counter"></div>
 
       <div id="input">
         <input type="text" id="text" value="">
@@ -64,12 +70,11 @@ if( ! is_array($result_search) ){
         } ?>
       </div>
 
-      <div id="output">
-        <p>chat</p>
-      </div>
+      <h3>chat</h3>
+      <div id="output"></div>
 
       <div id="people">
-        <p>参加者</p>
+        <h3>参加者</h3>
         <ul>
         </ul>
       </div>
@@ -89,7 +94,7 @@ if( ! is_array($result_search) ){
       <?php
       require_once(JS_INIT);      //初期処理
       require_once(JS_CLICK);     //ボタンを押したときの処理
-      require_once(JS_FUNCTION);  //関数
+      require_once(JS_FUNCTION);  //部屋の人全員に動作する関数
       ?>
 
     });

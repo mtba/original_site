@@ -10,6 +10,7 @@ $mode = isset($_POST['mode']) ? $_POST['mode'] : '';
 $on_off = isset($_POST['on_off']) ? $_POST['on_off'] : '';
 $data = array();
 
+//送られたモードに応じてＤＢ操作
 switch ($mode) {
   case 'delete':
 
@@ -40,6 +41,5 @@ switch ($mode) {
     break;
 }
 echo json_encode($data);
-
 
 ?>

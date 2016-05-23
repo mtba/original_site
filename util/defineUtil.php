@@ -22,3 +22,4 @@ const DB_PWD      = '';                 //パスワード
 const DB_TBL_ROOM = 'rooms';           //テーブル名
 
 const MAX_HINT = 6; //ヒント数上限
+const MAX_CHAT = 10; //表示発言数上限
