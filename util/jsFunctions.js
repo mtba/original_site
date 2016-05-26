@@ -14,17 +14,14 @@ function signal(sent){
 
     //発言
     case 'chat':
-      if ( $('#output p').size() == <?php echo MAX_CHAT;?> ) {
-        $('#output p').eq(0).remove();
-      }
-      $('#output').append('<p>' + sent.value.name + '：' + sent.value.remark + '</p>');
+      $('#output').prepend('<p>' + sent.value.name + '：' + sent.value.remark + '</p>');
       break;
 
     //ヒント提示
     case 'hint':
       answer_time = true;
-      $('.hint').eq(hint_num).text(sent.value.remark);
-      $('#message h3').text('回答時間');
+      $('#hints').append("<div class='hint'>ヒント"+hint_num+":"+sent.value.remark+"</div>");
+      $('#output').prepend('<p class="green">回答時間です。</p>');
       clearTimeout(timerID);
       count(20);
       break;
@@ -32,12 +29,19 @@ function signal(sent){
     //正解
     case 'success':
       if (answer_time == true) {
+
+        var plus = <?php echo(MAX_HINT*10); ?> - (hint_num-1) * 10;
+        var $point_parent = $('#people tr').eq(th).children('.point');
+        var $point_success = $('#'+sent.value.id+' .point');
+
         clearTimeout(timerID);
         answer_time = false;
-        $('#output').append(sent.value.name + '：' + sent.value.remark + '  <span class="red">←正解！</span><br>');
 
-        var $point = $('#'+sent.value.id+' .point');
-        $point.text( parseInt($point.text()) + 10 );
+        $('#output').prepend('<p>' + sent.value.name + '：' + sent.value.remark + '  <span class="red">←正解！</span></p>');
+        $('#output').prepend('<p class="green">' + name_parent + 'さんに10点。' + sent.value.name + 'さんに' + plus + '点。5秒後に次のお題が出されます。</p>');
+
+        $point_parent.text( parseInt($point_parent.text()) + 10 );
+        $point_success.text( parseInt($point_success.text()) + plus );
 
         to_next();
 
@@ -48,7 +52,7 @@ function signal(sent){
     case 'transfer':
       if (user_id == sent.value.next) {
         owner = true;
-        $('#output').append('<p class="green">' + $('#'+sent.value.next+' .user_name').text() + 'さんがオーナーになりました</p>');
+        $('#output').prepend('<p class="blue">' + $('#'+sent.value.next+' .user_name').text() + 'さんがオーナーになりました。</p>');
         $('#start').css('display','inline');
       }
       break;
@@ -57,14 +61,12 @@ function signal(sent){
     case 'start':
       game_on = true;
       all = sent.value.all;
+      name_parent = $('#people tr').eq(th).children('.user_name').text();
 
-      if ( $('#output p').size() == <?php echo MAX_CHAT;?> ) {
-        $('#output p').eq(0).remove();
-      }
-      $('#output').append('<p class="blue">ゲームスタート</p>');
+      $('.point').text('0');
+      $('#output').prepend('<p class="green">ゲームスタート。</p>');
 
       $("#join").prop("disabled", true);
-      $('#people ul li').append('<span class=point>0</span>');
 
       question();
 
@@ -72,18 +74,18 @@ function signal(sent){
 
     //ゲーム終了
     case 'finish':
-      th       = 0;
-      game_on  = false;
-      parent   = false;
-      hint_num = 0;
-      all      = [];
-      q_num    = 0;
-      $('#people ul li').css('color', 'black');
-      $('#message h3').text('');
-      $('#parent h2').text('');
-      $('#word h1').text('');
-      $('#counter').text('');
-      $('.point').remove();
+      $('#output').prepend('<p class="green">ゲーム終了。優勝は○○さんです。</p>');
+      th         = 0;
+      game_on    = false;
+      parent     = false;
+      hint_num   = 1;
+      all        = [];
+      q_num      = 0;
+      what_round = 1;
+      $('.user_name').css('color', 'black');
+      $('#word').text('(待機中)');
+      $('#counter').text('0');
+      $('.point').remove('0');
       $("#start").prop("disabled", false);
       $("#join").prop("disabled", false);
 
@@ -100,19 +102,15 @@ function enter(pushed){
   ds.stream().next(function(err,datas){
 
     //まず全消去
-    $('#people ul li').remove();
-    // people = [];
+    $('#people').text('');
 
     //参加者を全表示
     datas.forEach(function(datas) {
-      $('#people ul').append('<li id="'+datas.id+'"><span class=user_name>'+datas.value.user+'</span></li>'); //表示
-      // people.push(datas.id); //参加中のユーザーのIDを配列に格納しておく
+      var text = '<tr id="'+datas.id+'"><td class=user_name>'+datas.value.user+'</td><td class=point>0</td></tr>';
+      $('#people').append(text); //表示
     });
 
-    if ( $('#output p').size() == <?php echo MAX_CHAT;?> ) {
-      $('#output p').eq(0).remove();
-    }
-    $('#output').append('<p class="blue">' + pushed.value.user + 'さんが入室しました</p>');
+    $('#output').prepend('<p class="blue">' + pushed.value.user + 'さんが入室しました。</p>');
     cntrol_startBtn();
 
   });
@@ -121,7 +119,7 @@ function enter(pushed){
 //参加者が減るたびに呼ばれる関数
 function exit(data){
 
-  $('#output').append('<p class="blue">' + $('#'+data.id+' .user_name').text() + 'さんが退室しました</p>');
+  $('#output').prepend('<p class="blue">' + $('#'+data.id+' .user_name').text() + 'さんが退室しました</p>');
   $('#'+data.id).remove();
   cntrol_startBtn();
 
@@ -131,7 +129,7 @@ function exit(data){
 //二人以上なら解除
 function cntrol_startBtn(){
   if (owner == true && game_on == false) {
-    if ($('#people ul li').size() > 1) {
+    if ($('#people tr').size() > 1) {
       $("#start").prop("disabled", false);
     }else {
       $("#start").prop("disabled", true);
@@ -142,21 +140,24 @@ function cntrol_startBtn(){
 //出題
 function question(){
 
-  $('#people ul li').eq(th).css('color', '#e65a16');
-  $('#parent h2').text( '親：' + $('#people ul li').eq(th).children('.user_name').text() );
+  if (hint_num == 1) {
 
-  if (user_id == $('#people ul li').eq(th).attr("id")) {
-    parent = true;
-    $('#word h1').text(all[q_num]);
-    $('#message h3').text('ヒントを出してください');
-  }else {
-    parent = false;
-    $('#message h3').text('ヒント待ち');
-    $('#word h1').text('');
-    for (var i = 0; i < all[q_num].length; i++) {
-      $('#word h1').append('○');
+    $('#people tr').eq(th).css('color', '#e65a16');
+
+    if (user_id == $('#people tr').eq(th).attr("id")) {
+      parent = true;
+      $('#word').text('お題：' + all[q_num]);
+    }else {
+      parent = false;
+      $('#word').text('お題：');
+      for (var i = 0; i < all[q_num].length; i++) {
+        $('#word').append('○');
+      }
     }
+
   }
+
+  $('#output').prepend('<p class="green">'+name_parent+'さんは'+hint_num+'つ目のヒントを出してください。</p>');
 
   count(20);
 
@@ -177,17 +178,20 @@ function count(seconds){
       clearTimeout(timerID);
 
       if (answer_time == true) {
+
         answer_time = false;
         $('#remark').prop("disabled", false);
-        if (hint_num != <?php echo MAX_HINT;?> -1) {
+
+        if (hint_num != <?php echo MAX_HINT;?>) {
           hint_num++;
           question();
         }else {
-          $('#message h3').text('正解者無し');
+          $('#output').prepend('<p class="green">答えは「'+all[q_num]+'」でした。5秒後に次のお題が出されます。</p>');
           to_next();
         }
+
       }else {
-        $('#message h3').text('時間切れ');
+        $('#output').prepend('<p class="green">時間切れです。答えは「'+all[q_num]+'」でした。5秒後に次のお題が出されます。</p>');
         to_next();
       }
 
@@ -199,14 +203,14 @@ function count(seconds){
 //次の問題へ。またはゲーム終了へ
 function to_next(){
 
-  $('#word h1').text(all[q_num]);
+  $('#word').text('答え：' + all[q_num]);
 
   //5秒待って処理を実行
   setTimeout(function(){
-    $('.hint').text('');
+    $('#hints').text('');
     $('#remark').prop("disabled", false);
 
-    if (q_num == all.length-1) {
+    if (rounds == what_round && th == $('#people tr').size()-1) {
 
       if (owner == true) {
         $.ajax({
@@ -220,7 +224,7 @@ function to_next(){
           },
           success: function(res){
             if (res.success == false) {
-              $('#err').text('エラー発生。ゲームを終了できません')
+              $('#output').prepend('<p class="purple">エラー発生。ゲームを終了できません。退室してください。</p>')
             }else {
               ds.send({mode: 'finish'});
             }
@@ -229,18 +233,21 @@ function to_next(){
       }
 
     }else {
-      if (th < $('#people ul li').size()-1) {
+      if (th < $('#people tr').size()-1) {
         th++;
       }else {
         th = 0;
+        what_round++;
+        $('#output').prepend('<p class="grreen">ここから' + what_round + 'ラウンド目です。</p>');
       }
       q_num++;
-      hint_num = 0;
+      hint_num = 1;
+      name_parent = $('#people tr').eq(th).children('.user_name').text();
 
       if (th >= 1) {
-        $('#people ul li').eq(th-1).css('color', 'black');
+        $('#people tr').eq(th-1).css('color', 'black');
       }else {
-        $('#people ul li').eq($('#people ul li').size() - 1).css('color', 'black');
+        $('#people tr').eq($('#people tr').size() - 1).css('color', 'black');
       }
 
       question();

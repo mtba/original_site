@@ -39,7 +39,8 @@ require_once(DBACCESS);
     <?php
     $user_name = isset($_POST['userName']) ? $_POST['userName'] : '';
     $room_name = isset($_POST['roomName']) ? $_POST['roomName'] : '';
-    $rounds = isset($_POST['rounds']) ? $_POST['rounds'] : '';
+    $rounds    = isset($_POST['rounds']) ? $_POST['rounds']     : '';
+    $password  = isset($_POST['password']) ? $_POST['password'] : '';
     if (isset($_POST['create'])) {
       if (empty($user_name) || empty($room_name) || empty($rounds)) {
         echo "<h3>空の項目があります。再度入力してください</h3>";
@@ -47,8 +48,9 @@ require_once(DBACCESS);
         //入力データをDBにインサート
         $data = array(
           'room_name' => $room_name,
-          'rounds' => $rounds,
-          'started' => false
+          'rounds'    => $rounds,
+          'password'  => $password,
+          'started'   => false
         );
         $result = insert($data,DB_TBL_ROOM);
 
@@ -67,6 +69,7 @@ require_once(DBACCESS);
       <p>あなたの名前:<input type="text"name="userName" value="<?php echo $user_name;?>"></p>
       <p>部屋名:<input type="text" name="roomName" value="<?php echo $room_name;?>"></p>
       <p>ラウンド数:<input type="text" name="rounds" value="<?php echo $rounds;?>"></p>
+      <p>パスワード(任意):<input type="text" name="password" value="<?php echo $password;?>"></p>
       <input type="submit" name="create" value="作成">
     </form>
   </section>

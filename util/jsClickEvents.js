@@ -6,18 +6,48 @@
 //参加ボタンが押されたときの処理(空なら何も起きない)
 $('#join').click(function(){
   if ($('#text').val() != '') {
-    ds.push({user: $('#text').val()},function(err,pushed){
-      user_id   = pushed.id;
-      user_name = $('#text').val(); //ユーザー名は変数にも格納
-      join      = true;
-      $('#text').val('');
-      $('#join').hide();
-      $('#remark').css('display','inline');
-    },function(err){
-      $('#err').append('<p>参加できませんでした。errar内容:' + data.value.user + '</p>');
-    });
+    if (password) {
+
+      myPassWord=prompt("パスワードを入力してください","");
+      $.ajax({
+        type: "POST",
+        url: "ajax_DB.php",
+        datatype: "json",
+        data: {
+          "mode": "check",
+          "id": room_id,
+          "pass": myPassWord
+        },
+        success: function(res){
+          if (!res.success) {
+            alert( "エラー発生。ゲームに参加できません。" );
+            return 0;
+          }else {
+            if (res.match) {
+              push();
+              return 0;
+            }
+          }
+          alert( "パスワードが違います。" );
+        }
+      });
+      return 0;
+    }
+    push();
   }
 });
+function push(){
+  ds.push({user: $('#text').val()},function(err,pushed){
+    user_id   = pushed.id;
+    user_name = $('#text').val(); //ユーザー名は変数にも格納
+    join      = true;
+    $('#text').val('');
+    $('#join').hide();
+    $('#remark').css('display','inline');
+  },function(err){
+    $('#output').prepend('<p class="purple">参加できませんでした。</p>');
+  });
+}
 
 //発言ボタンが押されたとき
 $('#remark').click(function(){
@@ -44,7 +74,7 @@ $('#exit').click(function(){
   //参加者であれば、自分の情報をデータストアから削除し、チャット欄に退室と表示
   if (join == true) {
 
-    if ($('#people ul li').size() > 1) { //入室者が二人以上の時
+    if ($('#people tr').size() > 1) { //入室者が二人以上の時
       //オーナーならばオーナー権を一つ下の人に譲渡
       if (owner == true) {
         var next_id = $("#"+user_id).next().attr("id");
@@ -87,15 +117,15 @@ $('#start').click(function(){
     },
     success: function(res){
       if (res.success == false) {
-        $('#err').text('エラー発生。ゲームを開始できません')
+        $('#output').prepend('<p class="purple">エラー発生。ゲームを開始できません。<p>')
       }else {
         $("#start").prop("disabled", true);
 
         //全問題をここで取得してしまう
         var words = ['なし','りんご','おれんじ','ますかっと','ぱいなっぷる'];
         var all_questions =[];
-        for (var i = 0; i < $('#people ul li').size() * rounds; i++) {
-          var rand = Math.floor( Math.random() * 5 ) ;
+        for (var i = 0; i < $('#people tr').size() * rounds; i++) {
+          var rand = Math.floor( Math.random() * words.length ) ;
           all_questions.push(words[rand]);
         }
 
@@ -105,15 +135,15 @@ $('#start').click(function(){
   });
 });
 
-//実験用
-$('#exam').click(function(){
-  console.log($('#people ul li').size());
-
-  // ds.stream().next(function(err,datas){
-  //   console.log(datas);
-  //   console.log($('#people ul li').size());
-  // });
-  // if (user_id == people[th]) {
-  //   $('#people ul li').eq(0).css('color', 'red');
-  // }
-});
+// //実験用
+// $('#exam').click(function(){
+//   console.log($('#people tr').size());
+//
+//   ds.stream().next(function(err,datas){
+//     console.log(datas);
+//     console.log($('#people ul li').size());
+//   });
+//   if (user_id == people[th]) {
+//     $('#people ul li').eq(0).css('color', 'red');
+//   }
+// });
