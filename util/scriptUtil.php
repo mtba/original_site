@@ -1,4 +1,10 @@
 <?php
+
+// 特殊文字を HTML エンティティに変換する関数
+function h($str){
+    return htmlspecialchars($str, ENT_QUOTES);
+}
+
 /**
  * DB操作時のエラーをログファイルに追記する
  * @param type $mode 操作の種類 $result エラー文

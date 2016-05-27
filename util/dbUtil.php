@@ -7,7 +7,6 @@ function connect2MySQL(){
             ';charset='.DB_CHARSET,DB_USER,DB_PWD );
         //SQL実行時のエラーをtry-catchで取得できるように設定
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        //とりあえずエミュレートはオフ
         // $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
         return $pdo;
     } catch (PDOException $e) {

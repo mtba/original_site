@@ -52,9 +52,9 @@ function signal(sent){
     case 'transfer':
       if (user_id == sent.value.next) {
         owner = true;
-        $('#output').prepend('<p class="blue">' + $('#'+sent.value.next+' .user_name').text() + 'さんがオーナーになりました。</p>');
         $('#start').css('display','inline');
       }
+      $('#output').prepend('<p class="blue">' + $('#'+sent.value.next+' .user_name').text() + 'さんがオーナーになりました。</p>');
       break;
 
     //ゲームスタート
@@ -63,31 +63,13 @@ function signal(sent){
       all = sent.value.all;
       name_parent = $('#people tr').eq(th).children('.user_name').text();
 
+      $("#start").prop("disabled", true);
       $('.point').text('0');
       $('#output').prepend('<p class="green">ゲームスタート。</p>');
 
       $("#join").prop("disabled", true);
 
       question();
-
-      break;
-
-    //ゲーム終了
-    case 'finish':
-      $('#output').prepend('<p class="green">ゲーム終了。優勝は○○さんです。</p>');
-      th         = 0;
-      game_on    = false;
-      parent     = false;
-      hint_num   = 1;
-      all        = [];
-      q_num      = 0;
-      what_round = 1;
-      $('.user_name').css('color', 'black');
-      $('#word').text('(待機中)');
-      $('#counter').text('0');
-      $('.point').remove('0');
-      $("#start").prop("disabled", false);
-      $("#join").prop("disabled", false);
 
       break;
 
@@ -119,9 +101,35 @@ function enter(pushed){
 //参加者が減るたびに呼ばれる関数
 function exit(data){
 
-  $('#output').prepend('<p class="blue">' + $('#'+data.id+' .user_name').text() + 'さんが退室しました</p>');
+  var index = $('#'+data.id).index();
+
+  $('#output').prepend('<p class="blue">' + $('#'+data.id+' .user_name').text() + 'さんが退室しました。</p>');
   $('#'+data.id).remove();
-  cntrol_startBtn();
+
+  if ($('#people tr').text() == '') {
+    window.location.href = '<?php echo TOP;?>';
+    return 0;
+  }
+
+  if (game_on == true) {
+    if ($('#people tr').size() == 1) {
+      if (join == true) {
+        orner = true;
+      }
+      clearTimeout(timerID);
+      finish();
+    }else if (th > index) {
+      th = th - 1;
+    }else if (th == index) {
+      th = th - 1;
+      clearTimeout(timerID);
+      answer_time = false;
+      $('#output').prepend('<p class="green">答えは「'+all[q_num]+'」でした。親が退室したので、5秒後に次のお題に進みます。</p>');
+      to_next();
+    }
+  }else {
+    cntrol_startBtn();
+  }
 
 }
 
@@ -212,25 +220,7 @@ function to_next(){
 
     if (rounds == what_round && th == $('#people tr').size()-1) {
 
-      if (owner == true) {
-        $.ajax({
-          type: "POST",
-          url: "ajax_DB.php",
-          datatype: "json",
-          data: {
-            "mode": "game_switch",
-            "id": room_id,
-            "on_off": false
-          },
-          success: function(res){
-            if (res.success == false) {
-              $('#output').prepend('<p class="purple">エラー発生。ゲームを終了できません。退室してください。</p>')
-            }else {
-              ds.send({mode: 'finish'});
-            }
-          }
-        });
-      }
+      finish();
 
     }else {
       if (th < $('#people tr').size()-1) {
@@ -238,7 +228,7 @@ function to_next(){
       }else {
         th = 0;
         what_round++;
-        $('#output').prepend('<p class="grreen">ここから' + what_round + 'ラウンド目です。</p>');
+        $('#output').prepend('<p class="green">ここから' + what_round + 'ラウンド目です。</p>');
       }
       q_num++;
       hint_num = 1;
@@ -254,4 +244,55 @@ function to_next(){
 
     }
   },5000);
+}
+
+function finish(){
+
+  if (owner == true) {
+    $.ajax({
+      type: "POST",
+      url: "ajax_DB.php",
+      datatype: "json",
+      data: {
+        "mode": "game_switch",
+        "id": room_id,
+        "on_off": false
+      },
+      success: function(res){}
+    });
+  }
+
+  var points = [];
+  for (var i = 0; i < $('#people tr').size(); i++) {
+    points.push( $('#people tr').eq(i).children('.point').text() );
+  }
+  var max_p = Math.max.apply(null, points);
+  var text = '<p class="green">ゲーム終了。優勝は';
+  for (var i = 0; i < $('#people tr').size(); i++) {
+    if ($('#people tr').eq(i).children('.point').text() == max_p) {
+      text += $('#people tr').eq(i).children('.user_name').text()+'さん、';
+    }
+  }
+  text = text.substr( 0, text.length-1);
+  text += 'です。</p>';
+  $('#output').prepend(text);
+
+  th         = 0;
+  game_on    = false;
+  parent     = false;
+  hint_num   = 1;
+  all        = [];
+  q_num      = 0;
+  what_round = 1;
+  $('.user_name').css('color', 'black');
+  $('#word').text('(待機中)');
+  $('#hints').text('');
+  $('#counter').text('0');
+  $('.point').remove('0');
+  $("#join").prop("disabled", false);
+  $('#remark').prop("disabled", false);
+
+  if ($('#people tr').size() > 1) {
+    $("#start").prop("disabled", false);
+  }
 }

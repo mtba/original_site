@@ -26,6 +26,8 @@ var timerID; //タイマー管理用
 var milkcocoa = new MilkCocoa("leadinzocv7h.mlkcca.com");
 var ds = milkcocoa.dataStore(room_id);
 
+$('#text').focus();
+
 //まず全データ取得
 ds.stream().next(function(err,datas){
 

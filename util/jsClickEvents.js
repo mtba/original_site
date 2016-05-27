@@ -5,6 +5,9 @@
 
 //参加ボタンが押されたときの処理(空なら何も起きない)
 $('#join').click(function(){
+  join_funk();
+});
+function join_func(){
   if ($('#text').val() != '') {
     if (password) {
 
@@ -35,7 +38,7 @@ $('#join').click(function(){
     }
     push();
   }
-});
+}
 function push(){
   ds.push({user: $('#text').val()},function(err,pushed){
     user_id   = pushed.id;
@@ -51,6 +54,9 @@ function push(){
 
 //発言ボタンが押されたとき
 $('#remark').click(function(){
+  submit();
+});
+function submit(){
   if ($('#text').val() != '') {
 
     var text = $('#text').val();
@@ -67,41 +73,19 @@ $('#remark').click(function(){
     }
     $('#text').val('');
   }
-});
+}
 
-//退室ボタンが押されたとき
-$('#exit').click(function(){
-  //参加者であれば、自分の情報をデータストアから削除し、チャット欄に退室と表示
-  if (join == true) {
-
-    if ($('#people tr').size() > 1) { //入室者が二人以上の時
-      //オーナーならばオーナー権を一つ下の人に譲渡
-      if (owner == true) {
-        var next_id = $("#"+user_id).next().attr("id");
-        ds.send({mode: 'transfer',next: next_id});
-      }
-      ds.remove(user_id);
-      window.location.href = '<?php echo TOP;?>';
-    }else { //入室者が自分一人ならば、部屋をDBから削除
-      $.ajax({
-        type: "POST",
-        url: "ajax_DB.php",
-        datatype: "json",
-        data: {
-          "mode": "delete",
-          "id": room_id
-        },
-        success: function(res){
-          ds.remove(user_id);
-          window.location.href = '<?php echo TOP;?>';
-        }
-      });
+$('#text').keypress(function(e){
+  if (e.which == 13) {
+    if ($('#join').css("display") == 'inline-block') {
+      join_func();
+    }else {
+      submit();
     }
-
-  }else { //不参加者はただ出る
-    window.location.href = '<?php echo TOP;?>';
+    return false;
   }
 });
+
 
 //ゲーム開始ボタンが押されたとき
 $('#start').click(function(){
@@ -119,10 +103,9 @@ $('#start').click(function(){
       if (res.success == false) {
         $('#output').prepend('<p class="purple">エラー発生。ゲームを開始できません。<p>')
       }else {
-        $("#start").prop("disabled", true);
 
-        //全問題をここで取得してしまう
-        var words = ['なし','りんご','おれんじ','ますかっと','ぱいなっぷる'];
+        //全お題をここで取得してしまう
+        var words = ['なし','りんご','おれんじ','ますかっと','ぱいなっぷる','ゆうばりめろん','どらごんふるーつ'];
         var all_questions =[];
         for (var i = 0; i < $('#people tr').size() * rounds; i++) {
           var rand = Math.floor( Math.random() * words.length ) ;
@@ -135,15 +118,49 @@ $('#start').click(function(){
   });
 });
 
-// //実験用
-// $('#exam').click(function(){
-//   console.log($('#people tr').size());
-//
-//   ds.stream().next(function(err,datas){
-//     console.log(datas);
-//     console.log($('#people ul li').size());
-//   });
-//   if (user_id == people[th]) {
-//     $('#people ul li').eq(0).css('color', 'red');
-//   }
-// });
+//退室ボタンが押されたとき
+$('#exit').click(function(){
+  window.location.href = '<?php echo TOP;?>';
+});
+
+//ブラウザの閉じるボタンなど
+$(window).on("beforeunload", function() {
+  pageout();
+});
+
+function pageout(){
+  //参加者であれば、自分の情報をデータストアから削除し、チャット欄に退室と表示
+  if (join == true) {
+
+    if ($('#people tr').size() > 1) { //入室者が二人以上の時
+      //オーナーならばオーナー権を一つ下の人に譲渡
+      if (owner == true) {
+        var next_id = '';
+        if ($("#"+user_id).index() == $('#people tr').size()-1) {
+          next_id = $('#people tr').eq(0).attr("id");
+        }else {
+          next_id = $("#"+user_id).next().attr("id");
+        }
+        ds.send({mode: 'transfer',next: next_id});
+      }
+      ds.remove(user_id);
+    }else { //入室者が自分一人ならば、部屋をDBから削除
+
+      $.ajax({
+        type: "POST",
+        url: "ajax_DB.php",
+        datatype: "json",
+        async: false, //同期通信
+        data: {
+          "mode": "delete",
+          "id": room_id
+        },
+        success: function(res){
+          ds.remove(user_id);
+        }
+      });
+
+    }
+
+  }
+}

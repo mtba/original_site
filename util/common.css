@@ -175,7 +175,7 @@ ul{
   width: 532px;
   float: left;
   margin-bottom: 5px;
-  /*background-color: green;*/
+  margin-right: 4px;
 }
 .hint{
   border: solid 1px;
@@ -207,24 +207,28 @@ ul{
 .some-content-related-div{
   /*height: 240px;*/
   border: 1px solid;
-  margin-right: 5px;
+
   clear: left;
 }
 #output p{
   margin: 0;
 }
 
-
 #room_right{
   text-align: center;
-  width: 264px;
+  width: 262px;
   float: left;
+  word-break:break-all;
 }
 #people{
   margin: 5px auto;
   border: 1px solid;
 	border-collapse: collapse;
+  /*width: 260px;*/
 }
+/*.user_name{
+  width: 200px;
+}*/
 #people td{
 	padding: 5px 10px;
 	border: black 1px solid;
@@ -240,7 +244,7 @@ ul{
   color: rgb(142, 26, 166);
 }
 .green{
-  color: #2ab627;
+  color: #249622;
 }
 
 .point{

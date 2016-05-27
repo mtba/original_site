@@ -1,6 +1,6 @@
 <?php
 require_once("../util/defineUtil.php");
-// require_once(SCRIPT);
+require_once(SCRIPT);
 require_once(DBACCESS);
 
 $room_id   = isset($_GET['room_id']) ? $_GET['room_id']     : '';
@@ -55,7 +55,6 @@ if( ! is_array($result_search) ){
             <div id="room_input">
               <input type="text" id="text" value="">
               <input type="button" id="remark" value="発言">
-              <!-- <input type="text" id="user_name" value=""> -->
               <input type="button" id="join" value="参加">
             </div>
             <div class="empty"></div>

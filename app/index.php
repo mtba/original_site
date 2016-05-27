@@ -43,7 +43,8 @@ require_once(DBACCESS);
 
     if( ! is_array($result) ){
 
-      echo "<p>データの検索に失敗しました:".$result."</p>";
+      err_log('トップでの部屋検索',$result);
+      echo "<p>データの検索に失敗しました</p>";
 
     }else{
       // var_dump($result);

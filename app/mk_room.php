@@ -41,6 +41,7 @@ require_once(DBACCESS);
     $room_name = isset($_POST['roomName']) ? $_POST['roomName'] : '';
     $rounds    = isset($_POST['rounds']) ? $_POST['rounds']     : '';
     $password  = isset($_POST['password']) ? $_POST['password'] : '';
+
     if (isset($_POST['create'])) {
       if (empty($user_name) || empty($room_name) || empty($rounds)) {
         echo "<h3>空の項目があります。再度入力してください</h3>";
@@ -59,17 +60,19 @@ require_once(DBACCESS);
           echo '<meta http-equiv="refresh" content="0;URL='.ROOM.'?room_id='.$result.'&user_name='.$user_name.'">';
 
         }else {
-          echo 'データの挿入に失敗しました。次記のエラーにより処理を中断します:'.$result;
+          err_log('mk_room',$result);
+          echo '部屋の作成に失敗しました。';
         }
 
       }
     }
     ?>
+    <p>パスワードを設定しない場合は空欄にしてください。</p>
     <form action="" method="post">
-      <p>あなたの名前:<input type="text"name="userName" value="<?php echo $user_name;?>"></p>
-      <p>部屋名:<input type="text" name="roomName" value="<?php echo $room_name;?>"></p>
-      <p>ラウンド数:<input type="text" name="rounds" value="<?php echo $rounds;?>"></p>
-      <p>パスワード(任意):<input type="text" name="password" value="<?php echo $password;?>"></p>
+      <p>あなたの名前:<input type="text"name="userName" value="<?php echo h($user_name);?>"></p>
+      <p>部屋名:<input type="text" name="roomName" value="<?php echo h($room_name);?>"></p>
+      <p>ラウンド数:<input type="text" name="rounds" value="<?php echo h($rounds);?>"></p>
+      <p>パスワード(任意):<input type="text" name="password" value="<?php echo h($password);?>"></p>
       <input type="submit" name="create" value="作成">
     </form>
   </section>
