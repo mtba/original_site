@@ -150,6 +150,10 @@ ul{
   border-bottom: solid 1px #808080;
   padding: 8px 0;
 }*/
+.rooms_top{
+  float: left;
+}
+
 #people{
 
 }

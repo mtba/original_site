@@ -14,13 +14,13 @@ function signal(sent){
 
     //発言
     case 'chat':
-      $('#output').prepend('<p>' + sent.value.name + '：' + sent.value.remark + '</p>');
+      $('#output').prepend('<p>' + h(sent.value.name) + '：' + h(sent.value.remark) + '</p>');
       break;
 
     //ヒント提示
     case 'hint':
       answer_time = true;
-      $('#hints').append("<div class='hint'>ヒント"+hint_num+":"+sent.value.remark+"</div>");
+      $('#hints').append("<div class='hint'>ヒント"+ hint_num + ":" + h(sent.value.remark) + "</div>");
       $('#output').prepend('<p class="green">回答時間です。</p>');
       clearTimeout(timerID);
       count(20);
@@ -37,8 +37,8 @@ function signal(sent){
         clearTimeout(timerID);
         answer_time = false;
 
-        $('#output').prepend('<p>' + sent.value.name + '：' + sent.value.remark + '  <span class="red">←正解！</span></p>');
-        $('#output').prepend('<p class="green">' + name_parent + 'さんに10点。' + sent.value.name + 'さんに' + plus + '点。5秒後に次のお題が出されます。</p>');
+        $('#output').prepend('<p>' + h(sent.value.name) + '：' + h(sent.value.remark) + '  <span class="red">←正解！</span></p>');
+        $('#output').prepend('<p class="green">' + name_parent + 'さんに10点。' + h(sent.value.name) + 'さんに' + plus + '点。5秒後に次のお題が出されます。</p>');
 
         $point_parent.text( parseInt($point_parent.text()) + 10 );
         $point_success.text( parseInt($point_success.text()) + plus );
@@ -73,6 +73,33 @@ function signal(sent){
 
       break;
 
+    //カウントダウン
+    case 'count':
+
+      $('#counter').text(sent.value.second);
+
+      if (sent.value.second==0) {
+
+        if (answer_time == true) {
+          answer_time = false;
+          $('#remark').prop("disabled", false);
+
+          if (hint_num != <?php echo MAX_HINT;?>) {
+            hint_num++;
+            question();
+          }else {
+            $('#output').prepend('<p class="green">答えは「' + h(all[q_num]) + '」でした。5秒後に次のお題が出されます。</p>');
+            to_next();
+          }
+        }else {
+          $('#output').prepend('<p class="green">時間切れです。答えは「' + (all[q_num]) + '」でした。5秒後に次のお題が出されます。</p>');
+          to_next();
+        }
+
+      }
+
+      break;
+
     default:
       break;
   }
@@ -88,11 +115,11 @@ function enter(pushed){
 
     //参加者を全表示
     datas.forEach(function(datas) {
-      var text = '<tr id="'+datas.id+'"><td class=user_name>'+datas.value.user+'</td><td class=point>0</td></tr>';
+      var text = '<tr id="' + h(datas.id) + '"><td class=user_name>' + h(datas.value.user) + '</td><td class=point>0</td></tr>';
       $('#people').append(text); //表示
     });
 
-    $('#output').prepend('<p class="blue">' + pushed.value.user + 'さんが入室しました。</p>');
+    $('#output').prepend('<p class="blue">' + h(pushed.value.user) + 'さんが入室しました。</p>');
     cntrol_startBtn();
 
   });
@@ -124,7 +151,7 @@ function exit(data){
       th = th - 1;
       clearTimeout(timerID);
       answer_time = false;
-      $('#output').prepend('<p class="green">答えは「'+all[q_num]+'」でした。親が退室したので、5秒後に次のお題に進みます。</p>');
+      $('#output').prepend('<p class="green">答えは「' + h(all[q_num]) + '」でした。親が退室したので、5秒後に次のお題に進みます。</p>');
       to_next();
     }
   }else {
@@ -154,7 +181,7 @@ function question(){
 
     if (user_id == $('#people tr').eq(th).attr("id")) {
       parent = true;
-      $('#word').text('お題：' + all[q_num]);
+      $('#word').text('お題：' + h(all[q_num]) );
     }else {
       parent = false;
       $('#word').text('お題：');
@@ -165,7 +192,7 @@ function question(){
 
   }
 
-  $('#output').prepend('<p class="green">'+name_parent+'さんは'+hint_num+'つ目のヒントを出してください。</p>');
+  $('#output').prepend('<p class="green">' + h(name_parent) + 'さんは' + hint_num + 'つ目のヒントを出してください。</p>');
 
   count(20);
 
@@ -173,45 +200,63 @@ function question(){
 
 //カウントダウン
 function count(seconds){
-  function show(){
-    $('#counter').text(seconds);
-    seconds = seconds - 1;
-    timerID = setTimeout(function(){
-      show();
-    },1000);
-
-    if (seconds==0) {
-
-      $('#counter').text(seconds);
-      clearTimeout(timerID);
-
-      if (answer_time == true) {
-
-        answer_time = false;
-        $('#remark').prop("disabled", false);
-
-        if (hint_num != <?php echo MAX_HINT;?>) {
-          hint_num++;
-          question();
-        }else {
-          $('#output').prepend('<p class="green">答えは「'+all[q_num]+'」でした。5秒後に次のお題が出されます。</p>');
-          to_next();
-        }
-
-      }else {
-        $('#output').prepend('<p class="green">時間切れです。答えは「'+all[q_num]+'」でした。5秒後に次のお題が出されます。</p>');
-        to_next();
+  if (owner == true) {
+    show();
+    function show(){
+      ds.send({mode: 'count',second: seconds});
+      if (seconds==0) {
+        clearTimeout(timerID);
+        return 0;
       }
-
+      seconds = seconds - 1;
+      timerID = setTimeout(function(){
+        show();
+      },1000);
     }
   }
-  show();
 }
+
+// //カウントダウン
+// function count(seconds){
+//   function show(){
+//     $('#counter').text(seconds);
+//     seconds = seconds - 1;
+//     timerID = setTimeout(function(){
+//       show();
+//     },1000);
+//
+//     if (seconds==0) {
+//
+//       $('#counter').text(seconds);
+//       clearTimeout(timerID);
+//
+//       if (answer_time == true) {
+//
+//         answer_time = false;
+//         $('#remark').prop("disabled", false);
+//
+//         if (hint_num != <?php echo MAX_HINT;?>) {
+//           hint_num++;
+//           question();
+//         }else {
+//           $('#output').prepend('<p class="green">答えは「' + h(all[q_num]) + '」でした。5秒後に次のお題が出されます。</p>');
+//           to_next();
+//         }
+//
+//       }else {
+//         $('#output').prepend('<p class="green">時間切れです。答えは「' + (all[q_num]) + '」でした。5秒後に次のお題が出されます。</p>');
+//         to_next();
+//       }
+//
+//     }
+//   }
+//   show();
+// }
 
 //次の問題へ。またはゲーム終了へ
 function to_next(){
 
-  $('#word').text('答え：' + all[q_num]);
+  $('#word').text('答え：' + h(all[q_num]));
 
   //5秒待って処理を実行
   setTimeout(function(){
@@ -270,12 +315,12 @@ function finish(){
   var text = '<p class="green">ゲーム終了。優勝は';
   for (var i = 0; i < $('#people tr').size(); i++) {
     if ($('#people tr').eq(i).children('.point').text() == max_p) {
-      text += $('#people tr').eq(i).children('.user_name').text()+'さん、';
+      text += h( $('#people tr').eq(i).children('.user_name').text() )+'さん、';
     }
   }
   text = text.substr( 0, text.length-1);
   text += 'です。</p>';
-  $('#output').prepend(text);
+  $('#output').prepend( text );
 
   th         = 0;
   game_on    = false;
@@ -295,4 +340,14 @@ function finish(){
   if ($('#people tr').size() > 1) {
     $("#start").prop("disabled", false);
   }
+}
+
+//htmlspecialchars
+function h(ch) {
+    ch = ch.replace(/&/g,"&amp;") ;
+    ch = ch.replace(/"/g,"&quot;") ;
+    ch = ch.replace(/'/g,"&#039;") ;
+    ch = ch.replace(/</g,"&lt;") ;
+    ch = ch.replace(/>/g,"&gt;") ;
+    return ch ;
 }

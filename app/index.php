@@ -50,11 +50,22 @@ require_once(DBACCESS);
       // var_dump($result);
       echo "<ul>";
       foreach ($result as $key => $value) {
-        echo "<li><a href='" .ROOM. "?room_id=".$value['id']."'>" .$value['room_name']. "</a></li>";
+        // echo "<li><a href='" .ROOM. "?room_id=".$value['id']."'>" .$value['room_name']. "</a></li>";
+        $room_info = "<a class='rooms_top' href='" .ROOM. "?room_id=".$value['id']."'><ul><li>" .$value['room_name']. "</li><li>";
+        if ( !empty($value['password']) ) {
+          $room_info .= "パスワードあり</li>";
+        }
+        $room_info .= "<li>ラウンド数:".$value['rounds']."</li><li>";
+        if ($value['started'] == 0) {
+          $room_info .= "待機中</li></a>";
+        }else {
+          $room_info .= "ゲーム中</li></ul></a>";
+        }
+        echo $room_info;
       }
-      echo "</ul>";
     }
     ?>
+    <div class="empty"></div>
   </section>
   <!-- <form action="room.php" method="post">
     <input type="submit" value="部屋">

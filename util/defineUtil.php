@@ -10,7 +10,7 @@ const SCRIPT      = "../util/scriptUtil.php"; //
 const DBACCESS    = "../util/dbUtil.php"; //
 const JS_INIT     = '../util/jsInit.js'; //
 const JS_CLICK    = '../util/jsClickEvents.js'; //
-const JS_FUNCTION = '../util/jsfunctions.js'; //
+const JS_FUNCTION = '../util/jsFunctions.js'; //
 const CSS_COMMON  = '../util/common.css'; //CSS
 
 const DB_TYPE     = 'mysql';            //データベースの種類

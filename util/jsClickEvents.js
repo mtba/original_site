@@ -5,7 +5,7 @@
 
 //参加ボタンが押されたときの処理(空なら何も起きない)
 $('#join').click(function(){
-  join_funk();
+  join_func();
 });
 function join_func(){
   if ($('#text').val() != '') {
@@ -57,7 +57,7 @@ $('#remark').click(function(){
   submit();
 });
 function submit(){
-  if ($('#text').val() != '') {
+  if ( $('#text').val() != '' ) {
 
     var text = $('#text').val();
 
@@ -75,17 +75,17 @@ function submit(){
   }
 }
 
+//入力欄をフォーカスしてエンターキー押したとき
 $('#text').keypress(function(e){
   if (e.which == 13) {
-    if ($('#join').css("display") == 'inline-block') {
+    if ($('#join').css("display")=='inline-block' && $("#join").prop("disabled")==false) {
       join_func();
-    }else {
+    }else if ($('#remark').css("display")=='inline-block' && $("#remark").prop("disabled")==false) {
       submit();
     }
     return false;
   }
 });
-
 
 //ゲーム開始ボタンが押されたとき
 $('#start').click(function(){
@@ -103,17 +103,39 @@ $('#start').click(function(){
       if (res.success == false) {
         $('#output').prepend('<p class="purple">エラー発生。ゲームを開始できません。<p>')
       }else {
-
-        //全お題をここで取得してしまう
-        var words = ['なし','りんご','おれんじ','ますかっと','ぱいなっぷる','ゆうばりめろん','どらごんふるーつ'];
         var all_questions =[];
         for (var i = 0; i < $('#people tr').size() * rounds; i++) {
-          var rand = Math.floor( Math.random() * words.length ) ;
-          all_questions.push(words[rand]);
+          $.ajax({
+            async: false,
+            type: "post",
+            dataType: "json",
+            url: "trends_place.php",
+            success: function(trends) {
+              var rand = Math.floor( Math.random() * 25 ) ;
+              all_questions.push( trends[0].trends[rand].name );
+              console.log(trends[0].trends[rand].name);
+              // $(trends[0].trends[rand]).each(function(){
+              //   $('#output3').append(this.name+'<br>');
+              // });
+              // $('#output2').text(json.query.random[0].title);
+            }
+          });
         }
-
         ds.send({mode: 'start',all: all_questions});
       }
+
+
+
+        //全お題をここで取得してしまう
+      //   var words = ['なし','りんご','おれんじ','ますかっと','ぱいなっぷる','ゆうばりめろん','どらごんふるーつ'];
+      //   var all_questions =[];
+      //   for (var i = 0; i < $('#people tr').size() * rounds; i++) {
+      //     var rand = Math.floor( Math.random() * 25 ) ;
+      //     all_questions.push(words[rand]);
+      //   }
+      //
+      //   ds.send({mode: 'start',all: all_questions});
+      // }
     }
   });
 });
@@ -123,7 +145,7 @@ $('#exit').click(function(){
   window.location.href = '<?php echo TOP;?>';
 });
 
-//ブラウザの閉じるボタンなど
+//ページを離れるとき
 $(window).on("beforeunload", function() {
   pageout();
 });

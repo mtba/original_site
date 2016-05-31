@@ -65,7 +65,7 @@ ds.stream().next(function(err,datas){
 
     //参加者を全表示
     datas.forEach(function(datas) {
-      var text = '<tr id="'+datas.id+'"><td class=user_name>'+datas.value.user+'</td><td class=point>0</td></tr>';
+      var text = '<tr id="' + h(datas.id) + '"><td class=user_name>' + h(datas.value.user) + '</td><td class=point>0</td></tr>';
       $('#people').append(text); //表示
     });
 

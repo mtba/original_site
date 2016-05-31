@@ -56,7 +56,6 @@ require_once(DBACCESS);
         $result = insert($data,DB_TBL_ROOM);
 
         if(!is_string($result)){
-          // echo $result;
           echo '<meta http-equiv="refresh" content="0;URL='.ROOM.'?room_id='.$result.'&user_name='.$user_name.'">';
 
         }else {
