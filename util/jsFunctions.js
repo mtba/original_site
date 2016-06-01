@@ -20,10 +20,10 @@ function signal(sent){
     //ヒント提示
     case 'hint':
       answer_time = true;
-      $('#hints').append("<div class='hint'>ヒント"+ hint_num + ":" + h(sent.value.remark) + "</div>");
+      $('#hints').append("<div class='hint col-sm-3'><div class='panel panel-primary'><div class='panel-heading'>ヒント"+ hint_num + "</div><div class='panel-body'><p>" + h(sent.value.remark) + "</p></div></div>");
       $('#output').prepend('<p class="green">回答時間です。</p>');
       clearTimeout(timerID);
-      count(20);
+      count(<?php echo ANSWER_COUNTER;?>);
       break;
 
     //正解
@@ -115,7 +115,7 @@ function enter(pushed){
 
     //参加者を全表示
     datas.forEach(function(datas) {
-      var text = '<tr id="' + h(datas.id) + '"><td class=user_name>' + h(datas.value.user) + '</td><td class=point>0</td></tr>';
+      var text = '<tr id="' + h(datas.id) + '"><td class="user_name">' + h(datas.value.user) + '</td><td class="point text-center">0</td></tr>';
       $('#people').append(text); //表示
     });
 
@@ -194,7 +194,7 @@ function question(){
 
   $('#output').prepend('<p class="green">' + h(name_parent) + 'さんは' + hint_num + 'つ目のヒントを出してください。</p>');
 
-  count(20);
+  count(<?php echo HINT_COUNTER;?>);
 
 }
 

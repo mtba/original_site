@@ -12,6 +12,8 @@ const JS_INIT     = '../util/jsInit.js'; //
 const JS_CLICK    = '../util/jsClickEvents.js'; //
 const JS_FUNCTION = '../util/jsFunctions.js'; //
 const CSS_COMMON  = '../util/common.css'; //CSS
+const HEADER  = '../util/header.php';
+const FOOTER  = '../util/footer.php';
 
 const DB_TYPE     = 'mysql';            //データベースの種類
 const DB_HOST     = 'localhost';        //ホスト名
@@ -21,5 +23,7 @@ const DB_USER     = 'root';             //ユーザ
 const DB_PWD      = '';                 //パスワード
 const DB_TBL_ROOM = 'rooms';           //テーブル名
 
-const MAX_HINT = 5; //ヒント数上限
+const MAX_HINT       = 4; //ヒント数上限
+const HINT_COUNTER   = 25;
+const ANSWER_COUNTER = 25;
 // const MAX_CHAT = 10; //表示発言数上限

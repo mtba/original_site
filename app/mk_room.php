@@ -9,33 +9,27 @@ require_once(DBACCESS);
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>mk_room</title>
   <meta name="keywords" content="">
   <meta name="description" content="オリジナルサイト作成">
-  <!-- <link href="style.css" rel="stylesheet" media="all"> -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-  <!-- <script src="https://cdn.mlkcca.com/v2.0.0/milkcocoa.js"></script> -->
-  <link rel="stylesheet" type="text/css" href=<?php echo CSS_COMMON;?>>
+  <script src="js/bootstrap.min.js"></script>
+  <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
+  <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 </head>
-
 <body>
-  <header>
-      <div class="title">
-          <a href="<?php echo TOP ;?>">未定</a>
+
+<?php require_once(HEADER); ?>
+
+<div class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1 class="text-center">部屋作成</h1>
       </div>
-      <div class="right">
-        <ul>
-          <li>
-            <a href="<?php echo HOW;?>">遊び方</a>
-          </li>
-          <li>
-            <a href="<?php echo CONTACT;?>">お問合せ</a>
-          </li>
-        </ul>
-      </div>
-  </header>
-  <section>
-    <h2>部屋作成</h2>
+    </div>
     <?php
     $user_name = isset($_POST['userName']) ? $_POST['userName'] : '';
     $room_name = isset($_POST['roomName']) ? $_POST['roomName'] : '';
@@ -66,14 +60,61 @@ require_once(DBACCESS);
       }
     }
     ?>
-    <p>パスワードを設定しない場合は空欄にしてください。</p>
-    <form action="" method="post">
-      <p>あなたの名前:<input type="text"name="userName" value="<?php echo h($user_name);?>"></p>
-      <p>部屋名:<input type="text" name="roomName" value="<?php echo h($room_name);?>"></p>
-      <p>ラウンド数:<input type="text" name="rounds" value="<?php echo h($rounds);?>"></p>
-      <p>パスワード(任意):<input type="text" name="password" value="<?php echo h($password);?>"></p>
-      <input type="submit" name="create" value="作成">
-    </form>
-  </section>
+    <div class="row">
+      <div class="col-md-12">
+        <p>※パスワードを設定しない場合は空欄にしてください。</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <form action="" method="post" id="room_info">
+          <table class="table">
+            <tr>
+              <th>あなたの名前:</th>
+              <td>
+                <div class="form-group">
+                  <input type="text" name="userName" class="form-control" placeholder="your name" required>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>部屋名:</th>
+              <td>
+                <div class="form-group">
+                  <input type="text" name="roomName" class="form-control" placeholder="room name" required>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>ラウンド数:</th>
+              <td>
+                <div class="form-group">
+                  <select name="rounds" class="form-control">
+                    <?php
+                    for($i=1; $i<=9; $i++){ ?>
+                    <option value=<?php echo $i; if($i==3){echo " selected";}?>><?php echo $i ;?></option>
+                    <?php } ?>
+                  </select>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>パスワード(任意):</th>
+              <td>
+                <div class="form-group">
+                  <input type="text" name="password" class="form-control" placeholder="password">
+                </div>
+              </td>
+            </tr>
+          </table>
+          <button type="submit" name="create" value="作成" class="btn btn-primary btn-lg" form="room_info">作成</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php require_once(FOOTER); ?>
+
 </body>
 </html>

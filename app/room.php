@@ -6,77 +6,136 @@ require_once(DBACCESS);
 $room_id   = isset($_GET['room_id']) ? $_GET['room_id']     : '';
 $user_name = isset($_GET['user_name']) ? $_GET['user_name'] : '';
 
-//部屋の存在判定
-$result_search = search_rooms($room_id);
-if( ! is_array($result_search) ){
+?>
 
-  err_log('search',$result_search);
-  echo "<p>部屋が見つかりません</p>";
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="keywords" content="">
+  <meta name="description" content="オリジナルサイト作成">
+  <title>room</title>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="../util/jquery.slimscroll.min.js"></script>
+  <script src="https://cdn.mlkcca.com/v2.0.0/milkcocoa.js"></script>
+  <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
+  <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" type="text/css" href=<?php echo CSS_COMMON;?>>
+</head>
 
-}else if( empty($result_search) ){
-  ?>
-  <h2>この部屋は存在しません</h2>
-  <a href="<?php echo TOP;?>">トップページへ</a>
+<body>
   <?php
-}else{
-  $password = !empty($result_search[0]['password']) ? TRUE : FALSE;
-  ?>
+  //部屋の存在判定
+  $result_search = search_rooms($room_id);
+  if( ! is_array($result_search) ){
 
-  <!DOCTYPE html>
-  <html lang="ja">
-  <head>
-    <meta charset="UTF-8">
-    <title>room</title>
-    <meta name="keywords" content="">
-    <meta name="description" content="オリジナルサイト">
-    <!-- <link href="style.css" rel="stylesheet" media="all"> -->
-    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script> -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="../util/jquery.slimscroll.min.js"></script>
-    <script src="https://cdn.mlkcca.com/v2.0.0/milkcocoa.js"></script>
-    <link rel="stylesheet" type="text/css" href=<?php echo CSS_COMMON;?>>
-  </head>
+    err_log('search',$result_search);
+    echo "<p>部屋が見つかりません</p>";
 
-  <body>
-    <section>
-
-      <div id="wrap">
-        <div id="room_top">
-          <div id="word">(待機中)</div>
-        </div>
-
-        <div id="room_left">
-
-          <div id="hints"></div>
-          <div class="empty"></div>
-
-          <div id="third stage">
-            <div id="counter">0</div>
-            <div id="room_input">
-              <input type="text" id="text" value="">
-              <input type="button" id="remark" value="発言">
-              <input type="button" id="join" value="参加">
-            </div>
-            <div class="empty"></div>
+  }else if( empty($result_search) ){
+    ?>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1 class="text-center">この部屋は存在しません</h1>
           </div>
-
-          <div class="some-content-related-div">
-            <div id="output"></div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <a href="<?php echo TOP;?>">トップページへ</a>
           </div>
-
         </div>
-
-        <div id="room_right">
-          <input type="button" id='start' value="ゲームスタート">
-          <table id='people'></table>
-          <input type="button" id="exit" value="退室">
-        </div>
-
-        <!-- <input type="button" id="exam" value="実験"> -->
-        <div class="empty"></div>
       </div>
+    </div>
+    <?php
+  }else{
+    $password = !empty($result_search[0]['password']) ? TRUE : FALSE;
+    ?>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1 class="text-center" id="word">(待機中)</h1>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-8">
 
-    </section>
+            <div class="row" id="hints"></div>
+
+            <div class="row">
+              <div class="col-md-1">
+                <button id="counter" type="button" class="btn btn-primary">0</button>
+              </div>
+
+              <div class="col-md-11 input-group">
+                <input type="text" id="text" class="form-control">
+                <span class="input-group-btn">
+                  <button type="button" id="remark" class="btn btn-primary">発言</button>
+                  <button type="button" id="join" class="btn btn-primary">参加</button>
+                </span>
+              </div>
+            </div>
+
+            <div class="row" id="panel">
+              <div class="col-md-12">
+                <div class="panel panel-primary">
+                  <div class="panel-heading">情報</div>
+                  <div class="panel-body" id="output"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="col-xs-4" id="break">
+
+            <div class="row" id ="mg_bottom">
+              <div class="col-md-12">
+                <button type="button" class="btn btn-primary" id='start'>ゲームスタート</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <table class="table table-bordered" id='people'>
+                </table>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-9">
+
+                  <a href="#">
+                    <i class="fa fa-3x fa-fw fa-instagram"></i>
+                  </a>
+                  <a href="#">
+                    <i class="fa fa-3x fa-fw fa-twitter"></i>
+                  </a>
+                  <a href="#">
+                    <i class="fa fa-3x fa-fw fa-facebook"></i>
+                  </a>
+                  <a href="#">
+                    <i class="fa fa-3x fa-fw fa-github"></i>
+                  </a>
+
+              </div>
+
+              <div class="col-sm-3">
+                <button type="button" class="btn btn-primary" id="exit">退室</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
 
     <script type="text/javascript">
       $(document).ready(function() {
@@ -89,7 +148,8 @@ if( ! is_array($result_search) ){
 
       });
     </script>
-  </body>
-  </html>
-  <?php
-}
+    <?php
+  }
+?>
+</body>
+</html>

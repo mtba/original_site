@@ -50,6 +50,7 @@ function push(){
   },function(err){
     $('#output').prepend('<p class="purple">参加できませんでした。</p>');
   });
+  $('#text').focus();
 }
 
 //発言ボタンが押されたとき
@@ -73,6 +74,7 @@ function submit(){
     }
     $('#text').val('');
   }
+  $('#text').focus();
 }
 
 //入力欄をフォーカスしてエンターキー押したとき
@@ -90,6 +92,9 @@ $('#text').keypress(function(e){
 //ゲーム開始ボタンが押されたとき
 $('#start').click(function(){
 
+  $("#start").prop("disabled", true);
+  $('#output').prepend('<p class="purple">問題をロード中。しばらく時間がかかります。<p>');
+
   $.ajax({
     type: "POST",
     url: "ajax_DB.php",
@@ -101,7 +106,7 @@ $('#start').click(function(){
     },
     success: function(res){
       if (res.success == false) {
-        $('#output').prepend('<p class="purple">エラー発生。ゲームを開始できません。<p>')
+        $('#output').prepend('<p class="purple">エラー発生。ゲームを開始できません。<p>');
       }else {
         var all_questions =[];
         for (var i = 0; i < $('#people tr').size() * rounds; i++) {
