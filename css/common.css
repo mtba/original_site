@@ -1,0 +1,50 @@
+#tittle{
+  font-family: 'Vidaloka', serif;
+  text-align:center;
+  font-weight:normal;
+  color:#444;
+  display:block;
+  letter-spacing:1px;
+  text-shadow:1px 1px 1px #fff,1px 1px 1px #888;
+}
+
+body{
+  font-family:"ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, Osaka, sans-serif;
+}
+
+td{
+  word-break:break-all;
+}
+p{
+  word-break:break-all;
+}
+h2{
+  word-break:break-all;
+}
+#panel{
+  margin-top: 4%;
+}
+
+.red{
+  color: #e65a16;
+}
+.blue{
+  color: #0080ED;
+}
+.purple{
+  color: rgb(142, 26, 166);
+}
+.green{
+  color: #249622;
+}
+
+.point{
+  color: #0080ED;
+}
+
+#mg_bottom{
+  margin-bottom: 5%;
+}
+#people{
+  margin-bottom: 5%;
+}

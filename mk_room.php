@@ -1,5 +1,5 @@
 <?php
-require_once("../util/defineUtil.php");
+require_once("util/defineUtil.php");
 require_once(SCRIPT);
 require_once(DBACCESS);
 
@@ -8,16 +8,8 @@ require_once(DBACCESS);
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>mk_room</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="オリジナルサイト作成">
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
-  <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <?php require_once(HEAD_COMMON); ?>
 </head>
 <body>
 
@@ -35,16 +27,23 @@ require_once(DBACCESS);
     $room_name = isset($_POST['roomName']) ? $_POST['roomName'] : '';
     $rounds    = isset($_POST['rounds']) ? $_POST['rounds']     : '';
     $password  = isset($_POST['password']) ? $_POST['password'] : '';
+    $questions .= isset($_POST['word1']) ? $_POST['word1'] : '';
+    $questions .= isset($_POST['word2']) ? $_POST['word2'] : '';
+    
 
     if (isset($_POST['create'])) {
-      if (empty($user_name) || empty($room_name) || empty($rounds)) {
+      if (empty($user_name) || empty($room_name) || empty($rounds) || empty($questions)) {
         echo "<h3>空の項目があります。再度入力してください</h3>";
       }else {
+
+        $questions = substr( $questions , 0 , strlen($questions)-1 ); //末尾の_を削除
+
         //入力データをDBにインサート
         $data = array(
           'room_name' => $room_name,
           'rounds'    => $rounds,
           'password'  => $password,
+          'questions' => $questions,
           'started'   => false
         );
         $result = insert($data,DB_TBL_ROOM);
@@ -95,6 +94,15 @@ require_once(DBACCESS);
                     <option value=<?php echo $i; if($i==3){echo " selected";}?>><?php echo $i ;?></option>
                     <?php } ?>
                   </select>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>お題:</th>
+              <td>
+                <div class="form-group">
+                  <input type="checkbox" name="word1" value="fruits_">果物
+                  <input type="checkbox" name="word2" value="peopleJhistory_">人物(日本史)
                 </div>
               </td>
             </tr>

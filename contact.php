@@ -1,5 +1,5 @@
 <?php
-require_once("../util/defineUtil.php");
+require_once("util/defineUtil.php");
 require_once(SCRIPT);
 require_once(DBACCESS);
 
@@ -12,16 +12,8 @@ $field_message = isset($_POST['message']) ? $_POST['message'] : '';
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>contact</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="オリジナルサイト作成">
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
-  <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <?php require_once(HEAD_COMMON); ?>
 </head>
 <body>
 
@@ -43,7 +35,10 @@ if ( !empty($field_name) && !empty($field_email) && !empty($field_message) ) {
         alert('送信しました。');
           // window.location = 'thanks.html#contact（※送信後に移動するページ）';
       </script>
-  <?php
+      <?php
+      $field_name    = '';
+      $field_email   = '';
+      $field_message = '';
   }
   else { ?>
       <script language="javascript" type="text/javascript">
@@ -71,7 +66,7 @@ if ( !empty($field_name) && !empty($field_email) && !empty($field_message) ) {
               <th>あなたの名前:</th>
               <td>
                 <div class="form-group">
-                  <input type="text" name="name" class="form-control" placeholder="your name" required>
+                  <input type="text" name="name" class="form-control" placeholder="your name" value="<?php echo h($field_name);?>" required>
                 </div>
               </td>
             </tr>
@@ -79,7 +74,7 @@ if ( !empty($field_name) && !empty($field_email) && !empty($field_message) ) {
               <th>メールアドレス:</th>
               <td>
                 <div class="form-group">
-                  <input type="email" name="mail" class="form-control" placeholder="mail address" required>
+                  <input type="email" name="mail" class="form-control" placeholder="mail address" value="<?php echo h($field_email);?>" required>
                 </div>
               </td>
             </tr>
@@ -87,7 +82,7 @@ if ( !empty($field_name) && !empty($field_email) && !empty($field_message) ) {
               <th>内容:</th>
               <td>
                 <div class="form-group">
-                  <textarea rows="3" name="message" class="form-control" required></textarea>
+                  <textarea rows="3" name="message" class="form-control" required><?php echo h($field_message);?></textarea>
                 </div>
               </td>
             </tr>
@@ -100,31 +95,5 @@ if ( !empty($field_name) && !empty($field_email) && !empty($field_message) ) {
 </div>
 
 <?php require_once(FOOTER); ?>
-<!-- <form action="" method="post">
-  <table>
-    <tr>
-      <th>あなたの名前:</th><td><input type="text" name="name" placeholder="your name" required></td>
-    </tr>
-    <tr>
-      <th>メールアドレス:</th><td><input type="email" name="mail" placeholder="mail address" required></td>
-    </tr>
-    <tr>
-      <th>お問い合わせ内容:</th><td><textarea rows="3" name="message" required></textarea></td>
-    </tr>
-  </table>
 
-  <input type="submit" name="send" value="送信">
-
-</form> -->
-<!-- <form role="form" action="" method="post">
-  <div class="form-group">
-    <label for="exampleInputName1">Your Name</label>
-    <input type="text" class="form-control" id="exampleInputName1" placeholder="Enter name" name="name" required>
-    <label for="exampleInputEmail1">Email address</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email" name="email" required>
-    <label for="exampleInputText1">Message</label>
-    <textarea class="form-control" rows="3" name="message" required></textarea>
-  </div>
-  <button type="submit" name="sent" value="SEND MESSAGE" class="btn btn-default">Submit</button>
-</form> -->
 </body>

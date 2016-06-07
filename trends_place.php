@@ -47,53 +47,34 @@
 
 	// 取得したデータ
 	$json = substr( $res1, $res2['header_size'] ) ;				// 取得したデータ(JSONなど)
-	$header = substr( $res1, 0, $res2['header_size'] ) ;		// レスポンスヘッダー (検証に利用したい場合にどうぞ)
-
-	// [cURL]ではなく、[file_get_contents()]を使うには下記の通りです…
-	// $response = @file_get_contents( $request_url , false , stream_context_create( $context ) ) ;
+	// $header = substr( $res1, 0, $res2['header_size'] ) ;		// レスポンスヘッダー (検証に利用したい場合にどうぞ)
 
 	// JSONをオブジェクトに変換
 	$obj = json_decode( $json ) ;
 
 	// HTML用
-	$html = '' ;
+	// $html = '' ;
 
 	// 実行結果を出力
-	$html .= '<h2>実行結果</h2>' ;
+	// $html .= '<h2>実行結果</h2>' ;
 
 	// エラー判定
-	if( !$obj || !isset( $obj->access_token ) )
-	{
-		$html .= '<p>トークンを取得することができませんでした…。設定を見直して下さい。</p>' ;
-	}
-	else
-	{
+	// if( !$obj || !isset( $obj->access_token ) )
+	// {
+	// 	$html .= '<p>トークンを取得することができませんでした…。設定を見直して下さい。</p>' ;
+	// }
+	// else
+	// {
 		// 各データ
 		$bearer_token = $obj->access_token ;
 
 		// 出力する
-		$html .=  '<dl>' ;
-		$html .=  	'<dt>ベアラートークン</dt>' ;
-		$html .=  		'<dd>' . $bearer_token . '</dd>' ;
-		$html .=  '</dl>' ;
-	}
+		// $html .=  '<dl>' ;
+		// $html .=  	'<dt>ベアラートークン</dt>' ;
+		// $html .=  		'<dd>' . $bearer_token . '</dd>' ;
+		// $html .=  '</dl>' ;
+	// }
 
-	// 検証用にレスポンスヘッダーを出力 [本番環境では不要]
-	$html .= '<h2>取得したデータ</h2>' ;
-	$html .= '<p>下記のデータを取得できました。</p>' ;
-	$html .= 	'<h3>ボディ</h3>' ;
-	$html .= 	'<p><textarea rows="8">' . $json . '</textarea></p>' ;
-	$html .= 	'<h3>レスポンスヘッダー</h3>' ;
-	$html .= 	'<p><textarea rows="8">' . $header . '</textarea></p>' ;
-
-?>
-
-<?php
-	// ブラウザに[$html]を出力 (HTMLのヘッダーとフッターを付けましょう)
-	// echo $html ;
-?>
-
-<?php
 $request_url = 'https://api.twitter.com/1.1/trends/place.json' ;		// エンドポイント
 
 $place_id = array('1110809','1116753','1117034','1117099','1117155','1117227','1117502','1117545','1117605','1117817','1117881','1118072','1118108','1118129','1118285','1118370','1118550','234589','15015370','15015372','23424856','90036018');
@@ -137,20 +118,11 @@ curl_close( $curl ) ;
 
 // 取得したデータ
 $json = substr( $res1, $res2['header_size'] ) ;				// 取得したデータ(JSONなど)
-$header = substr( $res1, 0, $res2['header_size'] ) ;		// レスポンスヘッダー (検証に利用したい場合にどうぞ)
 
-// [cURL]ではなく、[file_get_contents()]を使うには下記の通りです…
-// $json = @file_get_contents( $request_url , false , stream_context_create( $context ) ) ;
 
 // JSONをオブジェクトに変換
 $obj = json_decode( $json ) ;
 
-// エラー判定
-if( !$json || !$obj )
-{
-  $html .= '<h2>エラー内容</h2>' ;
-  $html .= '<p>データを取得することができませんでした…。設定を見直して下さい。</p>' ;
-}
 echo $json;
 
 ?>

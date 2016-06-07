@@ -1,5 +1,5 @@
 <?php
-require_once("../util/defineUtil.php");
+require_once("util/defineUtil.php");
 require_once(SCRIPT);
 require_once(DBACCESS);
 
@@ -11,19 +11,10 @@ $user_name = isset($_GET['user_name']) ? $_GET['user_name'] : '';
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="keywords" content="">
-  <meta name="description" content="オリジナルサイト作成">
   <title>room</title>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="../util/jquery.slimscroll.min.js"></script>
-  <script src="https://cdn.mlkcca.com/v2.0.0/milkcocoa.js"></script>
-  <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
-  <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" type="text/css" href=<?php echo CSS_COMMON;?>>
+  <?php require_once(HEAD_COMMON); ?>
+  <script src="<?php echo JS_MLKCCA;?>"></script>
+  <script src="<?php echo JS_SCROLL;?>"></script>
 </head>
 
 <body>
@@ -108,24 +99,13 @@ $user_name = isset($_GET['user_name']) ? $_GET['user_name'] : '';
             </div>
 
             <div class="row">
-              <div class="col-sm-9">
-
-                  <a href="#">
-                    <i class="fa fa-3x fa-fw fa-instagram"></i>
-                  </a>
-                  <a href="#">
-                    <i class="fa fa-3x fa-fw fa-twitter"></i>
-                  </a>
-                  <a href="#">
-                    <i class="fa fa-3x fa-fw fa-facebook"></i>
-                  </a>
-                  <a href="#">
-                    <i class="fa fa-3x fa-fw fa-github"></i>
-                  </a>
-
+              <div class="col-sm-6  text-center">
+                <a href="https://twitter.com/share?url=<?php echo $url?>" type="button" class="btn btn-primary" target="_blank">
+                  部屋をツイート
+                </a>
               </div>
 
-              <div class="col-sm-3">
+              <div class="col-sm-6  text-center">
                 <button type="button" class="btn btn-primary" id="exit">退室</button>
               </div>
             </div>
@@ -135,9 +115,10 @@ $user_name = isset($_GET['user_name']) ? $_GET['user_name'] : '';
       </div>
     </div>
 
-
+    <?php require_once(FOOTER); ?>
 
     <script type="text/javascript">
+
       $(document).ready(function() {
 
         <?php

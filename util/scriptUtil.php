@@ -12,8 +12,19 @@ function h($str){
  */
 function err_log($mode,$result){
   $text = $mode.'に失敗。次記のエラーにより処理を中断:'.$result;
-  $fp = fopen('../logs/log.txt','a');
+  $fp = fopen('logs/log.txt','a');
   fwrite( $fp,$text.'　'.date('Y年n月j日 G時i分s秒')."\r\n" );
   fclose($fp);
+}
+
+/**
+ * 現在時をdatetime型で取得し返す
+ * @param type
+ * @return type datetime型の現在時
+ */
+function now(){
+    $datetime =new DateTime();
+    $date = $datetime->format('Y-m-d H:i:s');
+    return $date;
 }
 ?>

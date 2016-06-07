@@ -16,6 +16,10 @@ function connect2MySQL(){
 
 //レコードの挿入を行う。失敗した場合はエラー文を返却する
 function insert($data,$tbl_name){
+
+    //現在時をdatetime型で取得
+    $date = now();
+
     //db接続を確立
     $insert_db = connect2MySQL();
 
@@ -24,15 +28,11 @@ function insert($data,$tbl_name){
     foreach ($data as $key => $value) {
       $insert_sql .= $key.',';
     }
-    $insert_sql = substr( $insert_sql , 0 , strlen($insert_sql)-1 );//末尾の,を削除
-    $insert_sql .= ") VALUES(";
+    $insert_sql .= "newDate) VALUES(";
     foreach ($data as $value) {
       $insert_sql .= '?,';
     }
-    $insert_sql = substr( $insert_sql , 0 , strlen($insert_sql)-1 );//末尾の,を削除
-    $insert_sql .= ")";
-
-    // echo $insert_sql;
+    $insert_sql .= "?)";
 
     //クエリとして用意
     $insert_query = $insert_db->prepare($insert_sql);
@@ -43,6 +43,7 @@ function insert($data,$tbl_name){
       $insert_query->bindValue($i,$value);
       $i++;
     }
+    $insert_query->bindValue($i,$date);
 
     //SQLを実行
     try{
@@ -84,6 +85,27 @@ function search_rooms($id = null){
     return $seatch_query->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function search_words($genre,$num){
+    //db接続を確立
+    $search_db = connect2MySQL();
+
+    $search_sql = "SELECT name FROM $genre WHERE id = $num";
+
+    //クエリとして用意
+    $seatch_query = $search_db->query($search_sql);
+
+    //SQLを実行
+    try{
+        $seatch_query->execute();
+    } catch (PDOException $e) {
+        $seatch_db=null;
+        return $e->getMessage();
+    }
+    $seatch_db=null;
+    //該当するレコードを連想配列として返却
+    return $seatch_query->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function delete_room($id){
     //db接続を確立
     $delete_db = connect2MySQL();
@@ -106,6 +128,8 @@ function delete_room($id){
     return null;
 }
 
+
+
 function game_switch($id,$on_off){
     //db接続を確立
     $update_db = connect2MySQL();
@@ -127,5 +151,5 @@ function game_switch($id,$on_off){
         return $e->getMessage();
     }
     $update_db=null;
-    return null;
+    return $update_query->rowCount();
 }

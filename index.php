@@ -1,5 +1,5 @@
 <?php
-require_once("../util/defineUtil.php");
+require_once("util/defineUtil.php");
 require_once(SCRIPT);
 require_once(DBACCESS);
 ?>
@@ -7,28 +7,8 @@ require_once(DBACCESS);
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>top</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="オリジナルサイト作成">
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-  <!-- <link rel="stylesheet" type="text/css" href=<?php //echo CSS_COMMON;?>> -->
-  <!-- BootstrapのCSS読み込み -->
-  <!-- <link href="css/bootstrap.min.css" rel="stylesheet"> -->
-  <!-- jQuery読み込み -->
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
-  <!-- BootstrapのJS読み込み -->
-  <script src="js/bootstrap.min.js"></script>
-  <!-- <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
-  <!-- <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
-  <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-  <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
-  <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <?php require_once(HEAD_COMMON); ?>
 </head>
 <body>
 
@@ -65,7 +45,7 @@ require_once(DBACCESS);
         }
 
         $room_info = "<a href='" .ROOM. "?room_id=".$value['id']."' class='col-sm-3'>";
-        $room_info .= "<h1 class='text-center'>".$value['room_name']."</h1>";
+        $room_info .= "<h2 class='text-center'>".$value['room_name']."</h2>";
         $room_info .= "<ul class='list-unstyled'><li>パスワード";
         if ( !empty($value['password']) ) {
           $room_info .= "あり</li>";

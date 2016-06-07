@@ -8,7 +8,7 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="<?php echo TOP ;?>">
-        <span>未定</span>
+        <span id="tittle">You got it</span>
       </a>
     </div>
     <div class="collapse navbar-collapse" id="navbar-ex-collapse">
