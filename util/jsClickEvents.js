@@ -104,44 +104,33 @@ $start.click(function(){
     },
     success: function(res){
       if (res.success == false) {
-        $output.prepend('<p class="purple">エラー発生。ゲームを開始できません。一度退室してください<p>')
+        $output.prepend('<p class="purple">エラー発生。ゲームを開始できません。一度退室してください<p>');
       }else {
+
         var all_questions =[];
-        // for (var i = 0; i < $('.user_track').size() * rounds; i++) {
-        //   var rand_q = Math.floor( Math.random() * array_q.length );
-        //   if (array_q[rand_q] == 'trend') {
-        //     $.ajax({
-        //       async: false,
-        //       type: "post",
-        //       dataType: "json",
-        //       url: "trends_place.php",
-        //       success: function(trends) {
-        //         var rand = Math.floor( Math.random() * 25 ) ;
-        //         all_questions.push( trends[0].trends[rand].name );
-        //       }
-        //     });
-        //   }else
-            $.ajax({
-              async: false,
-              type: "post",
-              dataType: "json",
-              url: "ajax_DB.php",
-              data: {
-                "mode": "get_words",
-                "num": $('.user_track').size() * rounds,
-                "questions": str_q
-              },
-              success: function(word) {
-                console.log(word.name);
+
+          $.ajax({
+            async: false,
+            type: "post",
+            dataType: "json",
+            url: "ajax_DB.php",
+            data: {
+              "mode": "get_words",
+              "num": $('.user_track').size() * rounds,
+              "id": room_id,
+              "questions": str_q
+            },
+            success: function(word) {
+              if (word.success == false) {
+                $output.prepend('<p class="purple">エラー発生。ゲームを開始できません。一度退室してください<p>');
+              }else {
                 all_questions = word.name;
+                ds.send({mode: 'start',all: all_questions});
               }
-            });
-          // }
-        // }
+            }
+          });
 
-        ds.send({mode: 'start',all: all_questions});
       }
-
     }
   });
   $text.focus();

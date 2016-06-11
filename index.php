@@ -7,7 +7,7 @@ require_once(DBACCESS);
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <title>top</title>
+  <title>top_page</title>
   <?php require_once(HEAD_COMMON); ?>
 </head>
 <body>

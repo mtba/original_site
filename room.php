@@ -11,7 +11,7 @@ $user_name = isset($_GET['user_name']) ? $_GET['user_name'] : '';
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <title>room</title>
+  <title>room_page</title>
   <?php require_once(HEAD_COMMON); ?>
   <script src="<?php echo JS_MLKCCA;?>"></script>
   <script src="<?php echo JS_SCROLL;?>"></script>

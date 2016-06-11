@@ -12,7 +12,7 @@ $field_message = isset($_POST['message']) ? $_POST['message'] : '';
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <title>contact</title>
+  <title>contact_page</title>
   <?php require_once(HEAD_COMMON); ?>
 </head>
 <body>
@@ -21,7 +21,7 @@ $field_message = isset($_POST['message']) ? $_POST['message'] : '';
 
 if ( !empty($field_name) && !empty($field_email) && !empty($field_message) ) {
 
-  $mail_to = 'mtba9lear@gmail.com';
+  $mail_to = CONTACT_TO;
   $subject = 'Message from a site visitor '.$field_name;
   $body_message  = 'From: '.$field_name."\n";
   $body_message .= 'E-mail: '.$field_email."\n";

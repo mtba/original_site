@@ -8,7 +8,7 @@ require_once(DBACCESS);
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <title>mk_room</title>
+  <title>make_room_page</title>
   <?php require_once(HEAD_COMMON); ?>
 </head>
 <body>
@@ -29,7 +29,7 @@ require_once(DBACCESS);
     $password  = isset($_POST['password']) ? $_POST['password'] : '';
     $questions .= isset($_POST['word1']) ? $_POST['word1'] : '';
     $questions .= isset($_POST['word2']) ? $_POST['word2'] : '';
-    
+
 
     if (isset($_POST['create'])) {
       if (empty($user_name) || empty($room_name) || empty($rounds) || empty($questions)) {

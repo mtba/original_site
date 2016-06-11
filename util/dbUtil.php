@@ -130,18 +130,17 @@ function delete_room($id){
 
 
 
-function game_switch($id,$on_off){
+function game_switch($id,$value){
     //db接続を確立
     $update_db = connect2MySQL();
 
     //SQL文作成
-    $update_sql = "UPDATE ".DB_TBL_ROOM." set started =".$on_off." WHERE id = :id";
+    $update_sql = "UPDATE ".DB_TBL_ROOM." SET started = ".$value." WHERE id = :id";
 
     //クエリとして用意
     $update_query = $update_db->prepare($update_sql);
 
     $update_query -> bindValue(':id',$id);
-
 
     //SQLを実行
     try{
@@ -152,4 +151,50 @@ function game_switch($id,$on_off){
     }
     $update_db=null;
     return $update_query->rowCount();
+}
+
+function reload_date($id){
+    //db接続を確立
+    $update_db = connect2MySQL();
+
+    //現在時をdatetime型で取得
+    $date = now();
+
+    //SQL文作成
+    $update_sql = "UPDATE ".DB_TBL_ROOM." SET newDate = '$date' WHERE id =$id";
+
+    //クエリとして用意
+    $update_query = $update_db->prepare($update_sql);
+
+    // $update_query -> bindValue(1,$date);
+    // $update_query -> bindValue(1,$id);
+
+    //SQLを実行
+    try{
+        $update_query->execute();
+    } catch (PDOException $e) {
+        $update_db=null;
+        return $e->getMessage();
+    }
+    $update_db=null;
+    return $update_query->rowCount();
+}
+
+function clean(){
+    //db接続を確立
+    $delete_db = connect2MySQL();
+
+    $delete_sql = "DELETE from ".DB_TBL_ROOM." WHERE TIMESTAMPDIFF(second,newDate,now()) > 43200";
+
+    $delete_query = $delete_db->prepare($delete_sql);
+
+    //SQLを実行
+    try{
+        $delete_query->execute();
+    } catch (PDOException $e) {
+        $delete_db=null;
+        return $e->getMessage();
+    }
+    $delete_db=null;
+    return $delete_query->rowCount();
 }

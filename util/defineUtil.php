@@ -25,14 +25,18 @@ const CSS_ICON     = 'css/font-awesome.min.css'; //アイコン
 const CSS_PINGENDO = 'http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css'; //ブートストラップCSS
 
 const DB_TYPE     = 'mysql'; //データベースの種類
-const DB_HOST     = 'xxxxxx'; //ホスト名
-const DB_DBNAME   = 'xxxxxx'; //データベース名
+const DB_HOST     = 'xxx'; //ホスト名
+const DB_DBNAME   = 'xxx'; //データベース名
 const DB_CHARSET  = 'utf8'; //文字コード
-const DB_USER     = 'xxxxxx'; //ユーザ
-const DB_PWD      = 'xxxxxx'; //パスワード
-const DB_TBL_ROOM = 'xxxxxx'; //テーブル名
+const DB_USER     = 'xxx'; //ユーザ
+const DB_PWD      = 'xxx'; //パスワード
+const DB_TBL_ROOM = 'xxx'; //テーブル名
+const DB_TBL_FRUITS = 'xxx'; //テーブル名
+const DB_TBL_PEOPLE = 'xxx'; //テーブル名
 
-const PASS_MLKCCA = 'xxxxxx.mlkcca.com'; //milkcocoa接続用
+const PASS_MLKCCA = 'xxx.mlkcca.com'; //milkcocoa接続用
+
+const CONTACT_TO = 'xxx'; //問合せ先
 
 const MAX_HINT       = 4; //ヒント数上限
 const HINT_COUNTER   = 25; //ヒント時間

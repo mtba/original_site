@@ -11,14 +11,11 @@
             <a href="https://twitter.com/share?url=<?php echo $url;?>" target="_blank">
               <i class="fa fa-3x fa-fw fa-twitter text-inverse"></i>
             </a>
-            <a href="#">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $url;?>" target="_blank">
               <i class="fa fa-3x fa-fw fa-facebook text-inverse"></i>
             </a>
-            <a href="#">
+            <a href="https://plus.google.com/share?url=<?php echo $url;?>" target="_blank">
               <i class="fa fa-3x fa-fw fa-google-plus text-inverse"></i>
-            </a>
-            <a href="#">
-              <i class="fa fa-3x fa-fw fa-github text-inverse"></i>
             </a>
           </div>
         </div>
@@ -27,14 +24,11 @@
             <a href="https://twitter.com/share?url=<?php echo $url;?>" target="_blank">
               <i class="fa fa-3x fa-fw fa-twitter text-inverse"></i>
             </a>
-            <a href="#">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $url;?>" target="_blank">
               <i class="fa fa-3x fa-fw fa-facebook text-inverse"></i>
             </a>
-            <a href="#">
+            <a href="https://plus.google.com/share?url=<?php echo $url;?>" target="_blank">
               <i class="fa fa-3x fa-fw fa-google-plus text-inverse"></i>
-            </a>
-            <a href="#">
-              <i class="fa fa-3x fa-fw fa-github text-inverse"></i>
             </a>
           </div>
         </div>
